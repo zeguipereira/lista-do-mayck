@@ -1,0 +1,1366 @@
+// 1. Inserção Básica em Lista Encadeada
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int dado;
+    struct No* prox;
+} No;
+
+void inserir_inicio(No **lista, int valor) {
+    No *novo = malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = *lista;
+    *lista = novo;
+}
+
+void inserir_fim(No **lista, int valor) {
+    No *novo = malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (*lista == NULL) {
+        *lista = novo;
+        return;
+    }
+
+    No *atual = *lista;
+    while (atual->prox != NULL)
+        atual = atual->prox;
+
+    atual->prox = novo;
+}
+
+int main() {
+    No *lista = NULL;
+
+    printf("Inserindo elementos no início:\n");
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    exibir_lista(lista);
+
+    printf("Inserindo elementos no final:\n");
+    inserir_fim(&lista, 40);
+    inserir_fim(&lista, 50);
+    exibir_lista(lista);
+
+    return 0;
+}
+
+// 2. Contagem de Nós**
+
+int contar_nos(No *lista) {
+    int cont = 0;
+    while (lista != NULL) {
+        cont++;
+        lista = lista->prox;
+    }
+    return cont;
+}
+
+int main() {
+    No *lista = NULL;
+
+    printf("Inserindo elementos no início:\n");
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    exibir_lista(lista);
+    printf("Número de nós: %d\n", contar_nos(lista));
+
+    printf("\nInserindo elementos no final:\n");
+    inserir_fim(&lista, 40);
+    inserir_fim(&lista, 50);
+    exibir_lista(lista);
+    printf("Número de nós: %d\n", contar_nos(lista));
+
+    return 0;
+}
+
+
+// 3. Busca de Elemento**
+int buscar_elemento(No *lista, int valor) {
+    while (lista != NULL) {
+        if (lista->dado == valor)
+            return 1;
+        lista = lista->prox;
+    }
+    return 0;
+}
+
+int main() {
+    No *lista = NULL;
+
+    printf("Inserindo elementos no início:\n");
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    exibir_lista(lista);
+
+    printf("Inserindo elementos no final:\n");
+    inserir_fim(&lista, 40);
+    inserir_fim(&lista, 50);
+    exibir_lista(lista);
+
+    int valor;
+    printf("Digite um valor para buscar: ");
+    scanf("%d", &valor);
+
+    if (buscar_elemento(lista, valor))
+        printf("Elemento %d encontrado na lista.\n", valor);
+    else
+        printf("Elemento %d não encontrado na lista.\n", valor);
+
+    return 0;
+
+}
+
+
+// 4. Inserção em Posição Específica (0-indexado)**
+void inserir_posicao(No **lista, int pos, int valor) {
+    if (pos == 0) {
+        inserir_inicio(lista, valor);
+        return;
+    }
+
+    No *atual = *lista;
+    for (int i = 0; i < pos - 1 && atual != NULL; i++) {
+        atual = atual->prox;
+    }
+
+    if (atual == NULL) return; // posição inválida
+
+    No *novo = malloc(sizeof(No));
+    novo->dado = valor;
+    novo->prox = atual->prox;
+    atual->prox = novo;
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Inserir elementos na lista
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    exibir_lista(lista);
+
+    // Inserir elemento na posição 1
+    printf("Inserindo 25 na posição 1:\n");
+    inserir_posicao(&lista, 1, 25);
+    exibir_lista(lista);
+
+    // Inserir elemento na posição 0
+    printf("Inserindo 5 na posição 0:\n");
+    inserir_posicao(&lista, 0, 5);
+    exibir_lista(lista);
+
+    // Inserir elemento na posição 4
+    printf("Inserindo 35 na posição 4:\n");
+    inserir_posicao(&lista, 4, 35);
+    exibir_lista(lista);
+
+    return 0;
+   
+  }
+
+// 5. Remoção por Valor (primeira ocorrência)**
+void remover_valor(No **lista, int valor) {
+    No *atual = *lista, *anterior = NULL;
+
+    while (atual != NULL && atual->dado != valor) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (atual == NULL) return; // valor não encontrado
+
+    if (anterior == NULL) {
+        *lista = atual->prox; // valor está no início
+    } else {
+        anterior->prox = atual->prox;
+    }
+    free(atual);
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Inserir elementos na lista
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    exibir_lista(lista);
+
+    // Remover elemento da lista
+    printf("Removendo 20 da lista:\n");
+    remover_valor(&lista, 20);
+    exibir_lista(lista);
+
+    return 0;
+}
+
+
+// 6.Inversão Iterativa da Lista**
+void inverter_lista(No **lista) {
+    No *anterior = NULL, *atual = *lista, *proximo;
+
+    while (atual != NULL) {
+        proximo = atual->prox;
+        atual->prox = anterior;
+        anterior = atual;
+        atual = proximo;
+    }
+
+    *lista = anterior;
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Inserir elementos na lista
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    printf("Lista original:\n");
+    exibir_lista(lista);
+
+    // Inverter a lista
+    inverter_lista(&lista);
+    printf("Lista invertida:\n");
+    exibir_lista(lista);
+
+    return 0;
+}
+
+
+// 7. Encontrar o Nó do Meio (ponteiros lento e rápido)**
+No* encontrar_meio(No *lista) {
+    No *lento = lista, *rapido = lista;
+
+    while (rapido != NULL && rapido->prox != NULL) {
+        rapido = rapido->prox->prox;
+        lento = lento->prox;
+    }
+
+    return lento;
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Inserir elementos na lista
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    inserir_inicio(&lista, 40);
+    inserir_inicio(&lista, 50);
+    exibir_lista(lista);
+
+    // Encontrar o meio da lista
+    No *meio = encontrar_meio(lista);
+    if (meio != NULL)
+        printf("O valor do meio é: %d\n", meio->dado);
+    else
+        printf("A lista está vazia.\n");
+
+    return 0;
+}
+
+
+// 8. Impressão Reversa com Pilha**
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+void imprimir_reverso(No *lista) {
+    int pilha[MAX], topo = -1;
+
+    while (lista != NULL) {
+        pilha[++topo] = lista->dado;
+        lista = lista->prox;
+    }
+
+    while (topo >= 0)
+        printf("%d ", pilha[topo--]);
+    printf("\n");
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Inserir elementos na lista
+    inserir_inicio(&lista, 10);
+    inserir_inicio(&lista, 20);
+    inserir_inicio(&lista, 30);
+    inserir_inicio(&lista, 40);
+    inserir_inicio(&lista, 50);
+
+    // Imprimir lista original
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    // Imprimir lista em ordem reversa
+    printf("Lista em ordem reversa:\n");
+    imprimir_reverso(lista);
+
+    return 0;
+}
+
+
+// 9. Pilha com Array**
+#define TAM 100
+
+typedef struct {
+    int dados[TAM];
+    int topo;
+} Pilha;
+
+void inicializar_pilha(Pilha *p) {
+    p->topo = -1;
+}
+
+int esta_vazia(Pilha *p) {
+    return p->topo == -1;
+}
+
+int push(Pilha *p, int valor) {
+    if (p->topo == TAM - 1) return 0;
+    p->dados[++p->topo] = valor;
+    return 1;
+}
+
+int pop(Pilha *p) {
+    if (esta_vazia(p)) return -1;
+    return p->dados[p->topo--];
+}
+
+int topo(Pilha *p) {
+    if (esta_vazia(p)) return -1;
+    return p->dados[p->topo];
+}
+
+int main() {
+    Pilha p;
+    inicializar_pilha(&p);
+
+    push(&p, 10);
+    push(&p, 20);
+    push(&p, 30);
+
+    printf("Topo: %d\n", topo(&p));  // Saída: 30
+
+    printf("Removido: %d\n", pop(&p));  // Saída: 30
+    printf("Topo após pop: %d\n", topo(&p));  // Saída: 20
+
+    return 0;
+}
+
+
+// 10. Pilha com Lista Encadeada**
+typedef struct NoPilha {
+    int dado;
+    struct NoPilha *prox;
+} NoPilha;
+
+void push_lista(NoPilha **topo, int valor) {
+    NoPilha *novo = malloc(sizeof(NoPilha));
+    novo->dado = valor;
+    novo->prox = *topo;
+    *topo = novo;
+}
+
+int pop_lista(NoPilha **topo) {
+    if (*topo == NULL) return -1;
+    int valor = (*topo)->dado;
+    NoPilha *temp = *topo;
+    *topo = (*topo)->prox;
+    free(temp);
+    return valor;
+}
+
+int topo_lista(NoPilha *topo) {
+    if (topo == NULL) return -1;
+    return topo->dado;
+}
+
+int main() {
+    NoPilha *pilha = NULL;
+
+    push_lista(&pilha, 10);
+    push_lista(&pilha, 20);
+    push_lista(&pilha, 30);
+
+    printf("Topo da pilha: %d\n", topo_lista(pilha));  // Saída: 30
+
+    printf("Removido: %d\n", pop_lista(&pilha));  // Saída: 30
+    printf("Novo topo: %d\n", topo_lista(pilha));  // Saída: 20
+
+    return 0;
+}
+
+
+// 11. Verificação de Parênteses Balanceados**
+
+
+#include <string.h>
+
+int verificar_balanceamento(const char *s) {
+    char pilha[100];
+    int topo = -1;
+
+    for (int i = 0; s[i]; i++) {
+        char c = s[i];
+        if (c == '(' || c == '[' || c == '{') {
+            pilha[++topo] = c;
+        } else if (c == ')' || c == ']' || c == '}') {
+            if (topo == -1) return 0;
+            char topo_c = pilha[topo--];
+            if ((c == ')' && topo_c != '(') ||
+                (c == ']' && topo_c != '[') ||
+                (c == '}' && topo_c != '{'))
+                return 0;
+        }
+    }
+
+    return topo == -1;
+}
+
+int main() {
+    const char *expressao = "{[()]}";
+    if (verificar_balanceamento(expressao))
+        printf("Expressão balanceada.\n");
+    else
+        printf("Expressão não balanceada.\n");
+    return 0;
+}
+
+
+// 12. Inversão de String com Pilha**
+void inverter_string(char *str) {
+    int n = strlen(str);
+    char pilha[100];
+    int topo = -1;
+
+    for (int i = 0; i < n; i++)
+        pilha[++topo] = str[i];
+
+    for (int i = 0; i < n; i++)
+        str[i] = pilha[topo--];
+}
+
+int main() {
+    char str[] = "Exemplo de string";
+    printf("Original: %s\n", str);
+    inverter_string(str);
+    printf("Invertida: %s\n", str);
+    return 0;
+}
+// 13. Verificação de Palíndromo com Pilha**
+
+int eh_palindromo(const char *str) {
+    int n = strlen(str);
+    char pilha[100];
+    int topo = -1;
+
+    for (int i = 0; i < n; i++)
+        pilha[++topo] = str[i];
+
+    for (int i = 0; i < n; i++) {
+        if (str[i] != pilha[topo--])
+            return 0;
+    }
+    return 1;
+}
+
+int main() {
+    const char *palavra = "arara";
+    if (eh_palindromo(palavra))
+        printf("A palavra '%s' é um palíndromo.\n", palavra);
+    else
+        printf("A palavra '%s' não é um palíndromo.\n", palavra);
+    return 0;
+}
+// 14. Ordenação de Pilha com Outra Pilha**
+
+
+void ordenar_pilha(Pilha *p) {
+    Pilha aux;
+    inicializar_pilha(&aux);
+
+    while (!esta_vazia(p)) {
+        int temp = pop(p);
+
+        while (!esta_vazia(&aux) && topo(&aux) > temp)
+            push(p, pop(&aux));
+
+        push(&aux, temp);
+    }
+
+    while (!esta_vazia(&aux))
+        push(p, pop(&aux));
+}
+
+int main() {
+    Pilha p;
+    inicializar_pilha(&p);
+    push(&p, 34);
+    push(&p, 3);
+    push(&p, 31);
+    push(&p, 98);
+    push(&p, 92);
+    push(&p, 23);
+
+    ordenar_pilha(&p);
+
+    printf("Pilha ordenada: ");
+    while (!esta_vazia(&p)) {
+        printf("%d ", pop(&p));
+    }
+    printf("\n");
+
+    return 0;
+}
+// 15. Fila com Array Circular**
+
+
+#define TAM_FILA 100
+
+typedef struct {
+    int dados[TAM_FILA];
+    int ini, fim, qtd;
+} Fila;
+
+void inicializar_fila(Fila *f) {
+    f->ini = 0;
+    f->fim = 0;
+    f->qtd = 0;
+}
+
+int enfileirar(Fila *f, int valor) {
+    if (f->qtd == TAM_FILA) return 0;
+    f->dados[f->fim] = valor;
+    f->fim = (f->fim + 1) % TAM_FILA;
+    f->qtd++;
+    return 1;
+}
+
+int desenfileirar(Fila *f) {
+    if (f->qtd == 0) return -1;
+    int valor = f->dados[f->ini];
+    f->ini = (f->ini + 1) % TAM_FILA;
+    f->qtd--;
+    return valor;
+}
+
+int frente(Fila *f) {
+    if (f->qtd == 0) return -1;
+    return f->dados[f->ini];
+}
+
+int main() {
+    Fila f;
+    inicializar_fila(&f);
+    int opcao, valor;
+
+    do {
+        menu();
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o valor a ser enfileirado: ");
+                scanf("%d", &valor);
+                enfileirar(&f, valor);
+                break;
+            case 2:
+                valor = desenfileirar(&f);
+                if (valor != -1) {
+                    printf("Valor desenfileirado: %d\n", valor);
+                }
+                break;
+            case 3:
+                valor = frente(&f);
+                if (valor != -1) {
+                    printf("Valor na frente da fila: %d\n", valor);
+                }
+                break;
+            case 4:
+                imprimir_fila(&f);
+                break;
+            case 5:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+        }
+    } while (opcao != 5);
+
+    return 0;
+}
+// 16. Fila com Lista Encadeada (dinâmica)**
+
+
+typedef struct NoFila {
+    int dado;
+    struct NoFila *prox;
+} NoFila;
+
+typedef struct {
+    NoFila *ini;
+    NoFila *fim;
+} FilaEnc;
+
+void inicializar_fila_enc(FilaEnc *f) {
+    f->ini = f->fim = NULL;
+}
+
+void enfileirar_enc(FilaEnc *f, int valor) {
+    NoFila *novo = malloc(sizeof(NoFila));
+    novo->dado = valor;
+    novo->prox = NULL;
+
+    if (f->fim == NULL) {
+        f->ini = f->fim = novo;
+    } else {
+        f->fim->prox = novo;
+        f->fim = novo;
+    }
+}
+
+int desenfileirar_enc(FilaEnc *f) {
+    if (f->ini == NULL) return -1;
+
+    NoFila *temp = f->ini;
+    int valor = temp->dado;
+    f->ini = f->ini->prox;
+
+    if (f->ini == NULL)
+        f->fim = NULL;
+
+    free(temp);
+    return valor;
+}
+
+int main() {
+    FilaEnc fila;
+    inicializar_fila_enc(&fila);
+    int opcao, valor;
+
+    do {
+        printf("\nMenu de Operações da Fila Encadeada:\n");
+        printf("1. Enfileirar\n");
+        printf("2. Desenfileirar\n");
+        printf("3. Imprimir Fila\n");
+        printf("4. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o valor a ser enfileirado: ");
+                scanf("%d", &valor);
+                if (enfileirar_enc(&fila, valor))
+                    printf("Valor %d enfileirado com sucesso!\n", valor);
+                else
+                    printf("Erro ao enfileirar o valor %d.\n", valor);
+                break;
+            case 2:
+                valor = desenfileirar_enc(&fila);
+                if (valor != -1)
+                    printf("Valor %d desenfileirado com sucesso!\n", valor);
+                else
+                    printf("Fila vazia! Nenhum valor para desenfileirar.\n");
+                break;
+            case 3:
+                imprimir_fila_enc(&fila);
+                break;
+            case 4:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+        }
+    } while (opcao != 4);
+
+    return 0;
+}
+// 17. Geração de N Números Binários com Fila**
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct NoStr {
+    char str[20];
+    struct NoStr *prox;
+} NoStr;
+
+typedef struct {
+    NoStr *ini;
+    NoStr *fim;
+} FilaStr;
+
+void enfileirar_str(FilaStr *f, const char *str) {
+    NoStr *novo = malloc(sizeof(NoStr));
+    strcpy(novo->str, str);
+    novo->prox = NULL;
+    if (f->fim == NULL) {
+        f->ini = f->fim = novo;
+    } else {
+        f->fim->prox = novo;
+        f->fim = novo;
+    }
+}
+
+char* desenfileirar_str(FilaStr *f) {
+    if (f->ini == NULL) return NULL;
+
+    NoStr *temp = f->ini;
+    char *res = strdup(temp->str);
+    f->ini = f->ini->prox;
+
+    if (f->ini == NULL) f->fim = NULL;
+    free(temp);
+    return res;
+}
+
+void gerar_binarios(int N) {
+    FilaStr fila = {0};
+    enfileirar_str(&fila, "1");
+
+    for (int i = 0; i < N; i++) {
+        char *s = desenfileirar_str(&fila);
+        printf("%s\n", s);
+
+        char s1[20], s2[20];
+        sprintf(s1, "%s0", s);
+        sprintf(s2, "%s1", s);
+
+        enfileirar_str(&fila, s1);
+        enfileirar_str(&fila, s2);
+        free(s);
+    }
+}
+
+int main() {
+    int N;
+    printf("Digite o número de binários a serem gerados: ");
+    scanf("%d", &N);
+    gerar_binarios(N);
+    return 0;
+}
+// 18. Inversão dos Primeiros K Elementos da Fila**
+
+
+void inverter_primeiros_k(Fila *f, int k) {
+    Pilha p;
+    inicializar_pilha(&p);
+
+    // Passo 1: desempilha K elementos
+    for (int i = 0; i < k; i++)
+        push(&p, desenfileirar(f));
+
+    // Passo 2: empilha de volta na fila
+    while (!esta_vazia(&p))
+        enfileirar(f, pop(&p));
+
+    // Passo 3: move os restantes para trás
+    int tamanho = f->qtd;
+    for (int i = 0; i < tamanho - k; i++)
+        enfileirar(f, desenfileirar(f));
+}
+
+int main() {
+    Fila f;
+    inicializar_fila(&f);
+
+    // Enfileirando elementos
+    for (int i = 1; i <= 5; i++) {
+        enfileirar(&f, i);
+    }
+
+    printf("Fila original: ");
+    imprimir_fila(&f);
+
+    int k = 3;
+    inverter_primeiros_k(&f, k);
+
+    printf("Fila após inverter os primeiros %d elementos: ", k);
+    imprimir_fila(&f);
+
+    return 0;
+}
+// 19. Detecção de Ciclo (Algoritmo de Floyd)**
+
+
+int detectar_ciclo(No *lista) {
+    No *lento = lista, *rapido = lista;
+
+    while (rapido != NULL && rapido->prox != NULL) {
+        lento = lento->prox;
+        rapido = rapido->prox->prox;
+
+        if (lento == rapido)
+            return 1;
+    }
+
+    return 0;
+}
+
+int main() {
+    No *lista = NULL;
+    // Suponha que a lista seja criada e possivelmente tenha um ciclo
+
+    if (detectar_ciclo(lista)) {
+        printf("Ciclo detectado!\n");
+    } else {
+        printf("Sem ciclo.\n");
+    }
+
+    return 0;
+}
+// 20. União de Listas Ordenadas**
+
+
+No* unir_listas_ordenadas(No *l1, No *l2) {
+    No dummy;
+    No *tail = &dummy;
+    dummy.prox = NULL;
+
+    while (l1 && l2) {
+        if (l1->dado < l2->dado) {
+            tail->prox = l1;
+            l1 = l1->prox;
+        } else {
+            tail->prox = l2;
+            l2 = l2->prox;
+        }
+        tail = tail->prox;
+    }
+
+    tail->prox = l1 ? l1 : l2;
+
+    return dummy.prox;
+}
+
+int main() {
+    No* l1 = NULL;
+    No* l2 = NULL;
+
+    // Inserindo elementos nas listas (ambas ordenadas)
+    inserir_final(&l1, 1);
+    inserir_final(&l1, 3);
+    inserir_final(&l1, 5);
+
+    inserir_final(&l2, 2);
+    inserir_final(&l2, 4);
+    inserir_final(&l2, 6);
+
+    printf("Lista 1: ");
+    imprimir_lista(l1);
+
+    printf("Lista 2: ");
+    imprimir_lista(l2);
+
+    // Unindo listas
+    No* unida = unir_listas_ordenadas(l1, l2);
+
+    printf("Lista unida: ");
+    imprimir_lista(unida);
+
+    return 0;
+}
+// 21. Remoção de Todas as Ocorrências de um Valor na Lista**
+
+
+void remover_todas_ocorrencias(No **lista, int valor) {
+    No *atual = *lista;
+    No *anterior = NULL;
+
+    while (atual != NULL) {
+        if (atual->dado == valor) {
+            No *remover = atual;
+            if (anterior == NULL)
+                *lista = atual->prox;
+            else
+                anterior->prox = atual->prox;
+
+            atual = atual->prox;
+            free(remover);
+        } else {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+}
+
+int main() {
+    No* lista = NULL;
+
+    // Lista: 1 -> 2 -> 3 -> 2 -> 4 -> 2 -> NULL
+    inserir_final(&lista, 1);
+    inserir_final(&lista, 2);
+    inserir_final(&lista, 3);
+    inserir_final(&lista, 2);
+    inserir_final(&lista, 4);
+    inserir_final(&lista, 2);
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int valor_remover = 2;
+    remover_todas_ocorrencias(&lista, valor_remover);
+
+    printf("\nLista após remover todas as ocorrências de %d:\n", valor_remover);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
+// 22. Intersecção de Duas Listas (por referência)**
+
+
+No* encontrar_intersecao(No *l1, No *l2) {
+    No *a = l1, *b = l2;
+
+    while (a != b) {
+        a = (a == NULL) ? l2 : a->prox;
+        b = (b == NULL) ? l1 : b->prox;
+    }
+
+    return a; // Pode ser NULL se não houver intersecção
+}
+
+int main() {
+    // Parte comum
+    No* comum = criar_no(30);
+    comum->prox = criar_no(40);
+    comum->prox->prox = criar_no(50);
+
+    // Lista 1: 10 -> 20 -> [30 -> 40 -> 50]
+    No* l1 = criar_no(10);
+    l1->prox = criar_no(20);
+    l1->prox->prox = comum;
+
+    // Lista 2: 15 -> [30 -> 40 -> 50]
+    No* l2 = criar_no(15);
+    l2->prox = comum;
+
+    printf("Lista 1:\n");
+    imprimir_lista(l1);
+    printf("Lista 2:\n");
+    imprimir_lista(l2);
+
+    No* intersecao = encontrar_intersecao(l1, l2);
+
+    if (intersecao != NULL)
+        printf("\nInterseção encontrada no nó com valor: %d\n", intersecao->dado);
+    else
+        printf("\nNão há interseção entre as listas.\n");
+
+    // Atenção: não liberamos memória neste exemplo por simplicidade
+    return 0;
+}
+// 23. Rotação da Lista em K Posições**
+
+
+void rotacionar_lista(No **lista, int k) {
+    if (*lista == NULL || k == 0) return;
+
+    // Contar nós
+    No *temp = *lista;
+    int tamanho = 1;
+    while (temp->prox != NULL) {
+        temp = temp->prox;
+        tamanho++;
+    }
+
+    k = k % tamanho;
+    if (k == 0) return;
+
+    // Conectar o fim ao início
+    temp->prox = *lista;
+
+    // Achar novo final (tamanho - k)
+    temp = *lista;
+    for (int i = 0; i < tamanho - k - 1; i++)
+        temp = temp->prox;
+
+    *lista = temp->prox;
+    temp->prox = NULL;
+}
+
+int main() {
+    No* lista = NULL;
+
+    // Criando lista: 1 -> 2 -> 3 -> 4 -> 5
+    for (int i = 1; i <= 5; i++) {
+        inserir_final(&lista, i);
+    }
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int k = 2;
+    rotacionar_lista(&lista, k);
+
+    printf("\nLista após rotacionar %d posições à direita:\n", k);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
+// 24. Pilha com Mínimo em O(1)**
+
+
+
+typedef struct {
+    int valor;
+    int minimo;
+} NoPilhaMin;
+
+typedef struct {
+    NoPilhaMin dados[100];
+    int topo;
+} PilhaMin;
+
+void inicializar_pilha_min(PilhaMin *p) {
+    p->topo = -1;
+}
+
+void push_min(PilhaMin *p, int valor) {
+    int minimo = (p->topo == -1) ? valor : (valor < p->dados[p->topo].minimo ? valor : p->dados[p->topo].minimo);
+    p->dados[++p->topo] = (NoPilhaMin){valor, minimo};
+}
+
+int pop_min(PilhaMin *p) {
+    if (p->topo == -1) return -1;
+    return p->dados[p->topo--].valor;
+}
+
+int obter_minimo(PilhaMin *p) {
+    if (p->topo == -1) return -1;
+    return p->dados[p->topo].minimo;
+}
+
+int main() {
+    PilhaMin pilha;
+    inicializar_pilha_min(&pilha);
+
+    push_min(&pilha, 5);
+    push_min(&pilha, 3);
+    push_min(&pilha, 7);
+    push_min(&pilha, 2);
+    push_min(&pilha, 6);
+
+    printf("Mínimo atual: %d\n", obter_minimo(&pilha)); // Deve ser 2
+    printf("Pop: %d\n", pop_min(&pilha)); // Remove 6
+    printf("Mínimo atual: %d\n", obter_minimo(&pilha)); // Ainda é 2
+    printf("Pop: %d\n", pop_min(&pilha)); // Remove 2
+    printf("Mínimo atual: %d\n", obter_minimo(&pilha)); // Deve ser 3
+    printf("Pop: %d\n", pop_min(&pilha)); // Remove 7
+    printf("Pop: %d\n", pop_min(&pilha)); // Remove 3
+    printf("Mínimo atual: %d\n", obter_minimo(&pilha)); // Deve ser 5
+
+    return 0;
+}
+// 25. Duas Pilhas em um Único Array**
+
+#define TAM_DUAL 100
+
+typedef struct {
+    int dados[TAM_DUAL];
+    int topo1, topo2;
+} DuasPilhas;
+
+void inicializar_duas_pilhas(DuasPilhas *p) {
+    p->topo1 = -1;
+    p->topo2 = TAM_DUAL;
+}
+
+int push1(DuasPilhas *p, int valor) {
+    if (p->topo1 + 1 == p->topo2) return 0; // cheia
+    p->dados[++p->topo1] = valor;
+    return 1;
+}
+
+int push2(DuasPilhas *p, int valor) {
+    if (p->topo1 + 1 == p->topo2) return 0; // cheia
+    p->dados[--p->topo2] = valor;
+    return 1;
+}
+
+int pop1(DuasPilhas *p) {
+    if (p->topo1 == -1) return -1;
+    return p->dados[p->topo1--];
+}
+
+int pop2(DuasPilhas *p) {
+    if (p->topo2 == TAM_DUAL) return -1;
+    return p->dados[p->topo2++];
+}
+
+int main() {
+    DuasPilhas pilhas;
+    inicializar_duas_pilhas(&pilhas);
+
+    // Testando push nas duas pilhas
+    push1(&pilhas, 10);
+    push1(&pilhas, 20);
+    push1(&pilhas, 30);
+
+    push2(&pilhas, 100);
+    push2(&pilhas, 200);
+    push2(&pilhas, 300);
+
+    // Testando pop
+    printf("Pop pilha 1: %d\n", pop1(&pilhas)); // 30
+    printf("Pop pilha 1: %d\n", pop1(&pilhas)); // 20
+    printf("Pop pilha 1: %d\n", pop1(&pilhas)); // 10
+    printf("Pop pilha 1: %d\n", pop1(&pilhas)); // -1 (vazia)
+
+    printf("Pop pilha 2: %d\n", pop2(&pilhas)); // 300
+    printf("Pop pilha 2: %d\n", pop2(&pilhas)); // 200
+    printf("Pop pilha 2: %d\n", pop2(&pilhas)); // 100
+    printf("Pop pilha 2: %d\n", pop2(&pilhas)); // -1 (vazia)
+
+    return 0;
+}
+// 26. Avaliação de Expressão Pós-fixa**
+
+#include <ctype.h>
+#include <string.h>
+
+int avaliar_posfixa(char *exp) {
+    int pilha[100], topo = -1;
+
+    for (int i = 0; exp[i]; i++) {
+        if (isdigit(exp[i])) {
+            pilha[++topo] = exp[i] - '0';
+        } else if (exp[i] == ' ') {
+            continue;
+        } else {
+            int b = pilha[topo--];
+            int a = pilha[topo--];
+            switch (exp[i]) {
+                case '+': pilha[++topo] = a + b; break;
+                case '-': pilha[++topo] = a - b; break;
+                case '*': pilha[++topo] = a * b; break;
+                case '/': pilha[++topo] = a / b; break;
+            }
+        }
+    }
+
+    return pilha[topo];
+}
+
+int main() {
+    char expressao1[] = "2 3 +";       // 2 + 3 = 5
+    char expressao2[] = "5 1 2 + 4 * + 3 -"; // 5 + ((1 + 2) * 4) - 3 = 14
+
+    printf("Resultado 1: %d\n", avaliar_posfixa(expressao1));
+    printf("Resultado 2: %d\n", avaliar_posfixa(expressao2)); // Saída incorreta, pois só funciona com dígitos simples
+
+    return 0;
+}
+// 27. Fila Usando Duas Pilhas**
+
+
+typedef struct {
+    int dados[100];
+    int topo;
+} PilhaInt;
+
+void push_pilha(PilhaInt *p, int val) {
+    p->dados[++p->topo] = val;
+}
+
+int pop_pilha(PilhaInt *p) {
+    return p->dados[p->topo--];
+}
+
+int esta_vazia_pilha(PilhaInt *p) {
+    return p->topo == -1;
+}
+
+typedef struct {
+    PilhaInt entrada, saida;
+} FilaDuasPilhas;
+
+void inicializar_fila_dp(FilaDuasPilhas *f) {
+    f->entrada.topo = -1;
+    f->saida.topo = -1;
+}
+
+void enfileirar_dp(FilaDuasPilhas *f, int val) {
+    push_pilha(&f->entrada, val);
+}
+
+int desenfileirar_dp(FilaDuasPilhas *f) {
+    if (esta_vazia_pilha(&f->saida)) {
+        while (!esta_vazia_pilha(&f->entrada)) {
+            push_pilha(&f->saida, pop_pilha(&f->entrada));
+        }
+    }
+    return pop_pilha(&f->saida);
+}
+
+int main() {
+    FilaDuasPilhas fila;
+    inicializar_fila_dp(&fila);
+
+    enfileirar_dp(&fila, 10);
+    enfileirar_dp(&fila, 20);
+    enfileirar_dp(&fila, 30);
+
+    printf("Desenfileirando: %d\n", desenfileirar_dp(&fila)); // 10
+    enfileirar_dp(&fila, 40);
+    printf("Desenfileirando: %d\n", desenfileirar_dp(&fila)); // 20
+    printf("Desenfileirando: %d\n", desenfileirar_dp(&fila)); // 30
+    printf("Desenfileirando: %d\n", desenfileirar_dp(&fila)); // 40
+    printf("Desenfileirando: %d\n", desenfileirar_dp(&fila)); // -1 (vazia)
+
+    return 0;
+}
+// 28. Inversão em Grupos de K Nós**
+
+
+No* inverter_grupo(No *inicio, int k) {
+    No *anterior = NULL, *atual = inicio, *prox = NULL;
+    int contador = 0;
+
+    while (atual != NULL && contador < k) {
+        prox = atual->prox;
+        atual->prox = anterior;
+        anterior = atual;
+        atual = prox;
+        contador++;
+    }
+
+    if (prox != NULL)
+        inicio->prox = inverter_grupo(prox, k);
+
+    return anterior;
+}
+
+int main() {
+    No* lista = NULL;
+
+    for (int i = 1; i <= 10; i++)
+        inserir_final(&lista, i);
+
+    printf("Lista original:\n");
+    imprimir_lista(lista);
+
+    int k = 3;
+    lista = inverter_grupo(lista, k);
+
+    printf("\nLista após inverter em grupos de %d:\n", k);
+    imprimir_lista(lista);
+
+    liberar_lista(lista);
+    return 0;
+}
+// 29. Verificação de Palíndromo em Lista (espaço O(1))**
+
+
+No* reverter_lista(No* cabeca) {
+    No *ant = NULL, *atual = cabeca, *prox = NULL;
+
+    while (atual) {
+        prox = atual->prox;
+        atual->prox = ant;
+        ant = atual;
+        atual = prox;
+    }
+
+    return ant;
+}
+
+int eh_palindromo(No *lista) {
+    if (!lista || !lista->prox) return 1;
+
+    No *lento = lista, *rapido = lista;
+    while (rapido->prox && rapido->prox->prox) {
+        lento = lento->prox;
+        rapido = rapido->prox->prox;
+    }
+
+    No *segunda_metade = reverter_lista(lento->prox);
+    No *p1 = lista, *p2 = segunda_metade;
+
+    int palindromo = 1;
+    while (p2) {
+        if (p1->dado != p2->dado) {
+            palindromo = 0;
+            break;
+        }
+        p1 = p1->prox;
+        p2 = p2->prox;
+    }
+
+    lento->prox = reverter_lista(segunda_metade); // restaurar
+    return palindromo;
+}
+
+int main() {
+    No *lista = NULL;
+
+    // Lista palíndroma: 1 -> 2 -> 3 -> 2 -> 1
+    inserir_final(&lista, 1);
+    inserir_final(&lista, 2);
+    inserir_final(&lista, 3);
+    inserir_final(&lista, 2);
+    inserir_final(&lista, 1);
+
+    printf("Lista: ");
+    imprimir_lista(lista);
+
+    if (eh_palindromo(lista))
+        printf("É palíndromo.\n");
+    else
+        printf("Não é palíndromo.\n");
+
+    liberar_lista(lista);
+    return 0;
+}
+// 30. Trapping Rain Water (Água Retida entre Barras)**
+
+
+int trapping_rain_water(int* altura, int n) {
+    int esquerda = 0, direita = n - 1;
+    int max_esq = 0, max_dir = 0, agua = 0;
+
+    while (esquerda < direita) {
+        if (altura[esquerda] < altura[direita]) {
+            if (altura[esquerda] >= max_esq)
+                max_esq = altura[esquerda];
+            else
+                agua += max_esq - altura[esquerda];
+            esquerda++;
+        } else {
+            if (altura[direita] >= max_dir)
+                max_dir = altura[direita];
+            else
+                agua += max_dir - altura[direita];
+            direita--;
+        }
+    }
+
+    return agua;
+}
+
+int main() {
+    int altura[] = {0,1,0,2,1,0,1,3,2,1,2,1};
+    int n = sizeof(altura) / sizeof(altura[0]);
+
+    int resultado = trapping_rain_water(altura, n);
+    printf("Água acumulada: %d\n", resultado);  // Saída esperada: 6
+
+    return 0;
+}
+
